@@ -13,7 +13,7 @@ layout: default
     One of the big draws of Scalding over Cascading, aside from Scala vs Java, is it's elegance and succinctness. However, I found setting up
     a scalding development environment to be not straightforward. I had multiple issues with setting up Scalding the way it's recommended on Scalding's
     page. Sometimes it was an issue with sbt, other times it was the inability to get scalding built. The process of hooking everything up to IntelliJ
-    was another issue. I'm sure, being relatively new to Scala and sbt didn't help.  After spending an unnecessarily long period of time scoring multiple
+    was another issue. I'm sure, being relatively new to Scala and sbt didn't help.  After spending an unnecessarily long period of time scuoring multiple
     blogs to get things running, I now have an sbt based build system that integrates nicely with IntelliJ and the setup has been smooth whether I run it
     on Windows or Linux.
 </p>
@@ -86,12 +86,17 @@ sbt "run-main JSONMailbox.JobStart JSONMailbox.EmailStats --local -input q:\\inp
    A  note on creating multiple assemblies / sub assemblies. All the code I could find online don't really address code reuse in Scalding. Thanks to implicits, which
    are partly responsible for the succinctness of Scalding, it's not a simple matter of creating a Tap here, a pipe there and merging them together in another class.
    In the case of my JSONMailboxParser project, I have an input source, which is a large JSON file. If I want to run multiple jobs against this same input source, I'd like to
-   be able to share a common pipe among my jobs. For example, the input requires to be parsed, certain tuples are filtered out and other tuples are split up into
+   be able to share a common pipe among my jobs. For example, the input needs to be parsed, certain tuples are filtered out and other tuples are split up into
    multiple ones. I'd want to do this before running any of my jobs and wouldn't want to copy and paste this code in multiple jobs.
 </p>
 
 <p>
   After some searching, I found the way to do this is to have the shared component be a trait that extends com.twitter.scalding.Job. In this case, JSONMailParser is the trait.
+  <br/>
+<code>
+trait JSONMailParser extends Job
+</code>
+
  Then, in all jobs that require this shared code, we do :
 </p>
 <pre>
