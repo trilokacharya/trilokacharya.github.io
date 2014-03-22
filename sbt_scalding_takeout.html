@@ -3,7 +3,11 @@ layout: default
 ---
 
 <h3> Tips on setting up a Scalding dev environment </h3>
+
 <h4> With sbt, job running scripts and code reuse </h4>
+
+<a href="https://github.com/trilokacharya/JSONMailboxParser"> Link to my Scalding project discussed below </a>
+
 <p>
 
     One of the big draws of Scalding over Cascading, aside from Scala vs Java, is it's elegance and succinctness. However, I found setting up
@@ -51,8 +55,9 @@ layout: default
 
 <p>
 
-    You create a new sbt project in IntelliJ, add those library dependencies (joda time is only required for this particular project), then
-    start coding. IntelliJ syncs up the build.sbt file and gets your dependencies within a couple of mins.
+    You create a new sbt project in IntelliJ, add those library dependencies, then
+    start coding. IntelliJ syncs up the build.sbt file and gets your dependencies within a couple of mins. The non scalding dependencies in the file above,
+    such as JSON and joda time are specific only to my project and can be ommitted.
 </p>
 
 <p>
@@ -86,7 +91,7 @@ sbt "run-main JSONMailbox.JobStart JSONMailbox.EmailStats --local -input q:\\inp
 </p>
 
 <p>
-  After some searching, I found the way to do this is to have the shared component be a trait that extends the Job class. In this case, JSONMailParser is the trait.
+  After some searching, I found the way to do this is to have the shared component be a trait that extends com.twitter.scalding.Job. In this case, JSONMailParser is the trait.
  Then, in all jobs that require this shared code, we do :
 </p>
 <pre>
