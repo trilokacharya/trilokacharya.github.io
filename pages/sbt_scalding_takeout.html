@@ -1,0 +1,101 @@
+---
+layout: default
+---
+
+<h3> Tips on setting up a Scalding dev environment </h3>
+<h4> With sbt, job running scripts and code reuse </h4>
+<p>
+
+    One of the big draws of Scalding over Cascading, aside from Scala vs Java, is it's elegance and succinctness. However, I found setting up
+    a scalding development environment to be not straightforward. I had multiple issues with setting up Scalding the way it's recommended on Scalding's
+    page. Sometimes it was an issue with sbt, other times it was the inability to get scalding built. The process of hooking everything up to IntelliJ
+    was another issue. I'm sure, being relatively new to Scala and sbt didn't help.  After spending an unnecessarily long period of time scoring multiple
+    blogs to get things running, I now have an sbt based build system that integrates nicely with IntelliJ and the setup has been smooth whether I run it
+    on Windows or Linux.
+</p>
+
+<h4> IntelliJ 13 and built in sbt support </h4>
+
+<p>
+    I had been using IntelliJ 12, but tried out IntelliJ 13 Community Edition to see if the new sbt support was good. So far, I miss having an sbt
+    console built into IntelliJ, like it used to be with IntelliJ 12, but the overall experience has been smooth, especially since I can run sbt in an embedded
+    terminal window.
+</p>
+<p>
+    Here is what my build.sbt looks like for the Scalding test project:
+<br />
+    <pre>
+     <code>
+     name := "Scalding Takeout"
+
+    version := "SNAPSHOT-0.5"
+
+    scalaVersion := "2.9.2"
+
+    resolvers += "Concurrent Maven Repo" at "http://conjars.org/repo"
+
+    resolvers += "repo.codehale.com" at "http://repo.codahale.com"
+
+    libraryDependencies ++= Seq(
+      "com.twitter" % "scalding-core_2.9.2" % "0.8.8",
+      "org.apache.hadoop" % "hadoop-core" % "1.0.0",
+      "org.json4s" %% "json4s-native" % "3.2.7",
+      "joda-time" % "joda-time" % "2.0",
+      "org.joda" % "joda-convert" % "1.6",
+      "org.slf4j" % "slf4j-simple" % "1.6.4",
+      "log4j" % "log4j" % "1.2.14"
+    )
+     </code>
+    </pre>
+    </p>
+
+<p>
+
+    You create a new sbt project in IntelliJ, add those library dependencies (joda time is only required for this particular project), then
+    start coding. IntelliJ syncs up the build.sbt file and gets your dependencies within a couple of mins.
+</p>
+
+<p>
+    The other life saver I found was the ability to have sbt run the scalding code without using scald.rb . This took out a whole layer of dependency
+    for me and I can deploy the project anywhere without having to worry about having ruby setup along with whatever paths the scald.rb file needs. To deploy this in
+    a production environment, it would probably be best to create a fat jar and there are instructions for creating those floating aroudn as well. For development, I
+    love the setup of having a script that calls sbt with the right parameters to run your scalding code. My script is shown below, calling a particular job and passing in
+    arguments for input, output and error files.
+</p>
+
+<pre>
+<code>
+sbt "run-main JSONMailbox.JobStart JSONMailbox.EmailStats --local -input q:\\inputEmails.json -output resources/testout -errors resources/errors -output2 resources/testout2"
+</code>
+</pre>
+
+<p>
+ Here, JobStart is an object that calls Hadoop's ToolRunner utility and enables us to pass in a job name as a command line arg. Any scala class that implements the
+ Scalding's Job(args) class is a job. EmailStats is the job that's being run in the case above. The rest are arguments the same way you'd pass them to scald.rb. If you have a project with multiple Jobs, this is the easiest setup to
+ use so that you can specify which job to run and what arguments to pass to the jobs.
+</p>
+
+<h4> Scalding Assemblies </h4>
+
+<p>
+   A  note on creating multiple assemblies / sub assemblies. All the code I could find online don't really address code reuse in Scalding. Thanks to implicits, which
+   are partly responsible for the succinctness of Scalding, it's not a simple matter of creating a Tap here, a pipe there and merging them together in another class.
+   In the case of my JSONMailboxParser project, I have an input source, which is a large JSON file. If I want to run multiple jobs against this same input source, I'd like to
+   be able to share a common pipe among my jobs. For example, the input requires to be parsed, certain tuples are filtered out and other tuples are split up into
+   multiple ones. I'd want to do this before running any of my jobs and wouldn't want to copy and paste this code in multiple jobs.
+</p>
+
+<p>
+  After some searching, I found the way to do this is to have the shared component be a trait that extends the Job class. In this case, JSONMailParser is the trait.
+ Then, in all jobs that require this shared code, we do :
+</p>
+<pre>
+<code>
+class EmailStats(args:Args) extends Job(args) with JSONMailParser
+</code>
+</pre>
+
+<p>
+  Now in my EmailStats job, I can access parsedPipe, which is the pipe with the input data that has been parsed and modified. The EmailSearch job that's also
+  in the project does the same thing as the EmailStats job and has access to the same pipe.
+</p>
