@@ -92,10 +92,12 @@ sbt "run-main JSONMailbox.JobStart JSONMailbox.EmailStats --local -input q:\\inp
 
 <p>
   After some searching, I found the way to do this is to have the shared component be a trait that extends com.twitter.scalding.Job. In this case, JSONMailParser is the trait.
-  <br/>
+
+<pre>
 <code>
 trait JSONMailParser extends Job
 </code>
+</pre>
 
  Then, in all jobs that require this shared code, we do :
 </p>
