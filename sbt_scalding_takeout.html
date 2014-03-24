@@ -5,17 +5,19 @@ layout: default
 <h3> Tips on setting up a Scalding dev environment </h3>
 
 <h4> With sbt, job running scripts and code reuse </h4>
-
+<p>
 <a href="https://github.com/trilokacharya/JSONMailboxParser"> Link to my Scalding project discussed below </a>
+</p>
 
 <p>
 
     One of the big draws of Scalding over Cascading, aside from Scala vs Java, is it's elegance and succinctness. However, I found setting up
     a scalding development environment to be not straightforward. I had multiple issues with setting up Scalding the way it's recommended on Scalding's
     page. Sometimes it was an issue with sbt, other times it was the inability to get scalding built. The process of hooking everything up to IntelliJ
-    was another issue. I'm sure, being relatively new to Scala and sbt didn't help.  After spending an unnecessarily long period of time scuoring multiple
+    was another issue. I'm sure, being relatively new to Scala and sbt didn't help.  After spending an unnecessarily long period of time scouring multiple
     blogs to get things running, I now have an sbt based build system that integrates nicely with IntelliJ and the setup has been smooth whether I run it
-    on Windows or Linux.
+    on Windows or Linux. It fetches all required dependencies, including Scalding, from repositories and that ensures there are no version incompatibilities.
+    I also have a script that lets me run Scalding jobs off sbt, without using scald.rb and that also seems to move between OSs pretty well.
 </p>
 
 <h4> IntelliJ 13 and built in sbt support </h4>
@@ -63,7 +65,7 @@ layout: default
 <p>
     The other life saver I found was the ability to have sbt run the scalding code without using scald.rb . This took out a whole layer of dependency
     for me and I can deploy the project anywhere without having to worry about having ruby setup along with whatever paths the scald.rb file needs. To deploy this in
-    a production environment, it would probably be best to create a fat jar and there are instructions for creating those floating aroudn as well. For development, I
+    a production environment, it would probably be best to create a fat jar and there are instructions for creating those floating arounf as well. For development, I
     love the setup of having a script that calls sbt with the right parameters to run your scalding code. My script is shown below, calling a particular job and passing in
     arguments for input, output and error files.
 </p>
