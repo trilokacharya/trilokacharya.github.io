@@ -12,10 +12,11 @@ layout: default
 <p>
 
     One of the big draws of Scalding over Cascading, aside from Scala vs Java, is it's elegance and succinctness. However, I found setting up
-    a scalding development environment to be not straightforward. I had multiple issues with setting up Scalding the way it's recommended on Scalding's
-    page. Sometimes it was an issue with sbt, other times it was the inability to get scalding built. The process of hooking everything up to IntelliJ
-    was another issue. I'm sure, being relatively new to Scala and sbt didn't help.  After spending an unnecessarily long period of time scouring multiple
-    blogs to get things running, I now have an sbt based build system that integrates nicely with IntelliJ and the setup has been smooth whether I run it
+    a scalding development environment for the first time wasn't necessarily straightforward. I had multiple issues with setting up Scalding the way it's
+    recommended on Scalding's page. Sometimes it was an issue with building sbt, other times it was version incompatibility.
+     Trying jars wasn't much more help and mixing sbt with jars was a kludge. The process of hooking everything up to IntelliJ to create a smooth build system was another issue.
+     I'm sure, being relatively new to Scala and sbt didn't help.  After spending an unnecessarily long period of time scouring multiple
+    blogs to get things running, I now have an sbt based build system set up that integrates nicely with IntelliJ and the setup has been smooth whether I run it
     on Windows or Linux. It fetches all required dependencies, including Scalding, from repositories and that ensures there are no version incompatibilities.
     I also have a script that lets me run Scalding jobs off sbt, without using scald.rb and that also seems to move between OSs pretty well.
 </p>
@@ -28,7 +29,7 @@ layout: default
     terminal window.
 </p>
 <p>
-    Here is what my build.sbt looks like for the Scalding test project:
+    Here is what my build.sbt looks like for the Scalding test project that parses Gmail's mbox exports in JSON format:
 <br />
     <pre>
      <code>
@@ -58,8 +59,8 @@ layout: default
 <p>
 
     You create a new sbt project in IntelliJ, add those library dependencies, then
-    start coding. IntelliJ syncs up the build.sbt file and gets your dependencies within a couple of mins. The non scalding dependencies in the file above,
-    such as JSON and joda time are specific only to my project and can be ommitted.
+    start coding. IntelliJ syncs up the build.sbt file and gets your dependencies within a couple of minutes. The non scalding dependencies in the file above,
+    such as JSON and joda time are specific only to my project and can be ommitted. BTW, there's a project called nscala-time that is a good wrapper around joda time for Scala.
 </p>
 
 <p>
