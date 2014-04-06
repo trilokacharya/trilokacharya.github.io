@@ -19,6 +19,9 @@ layout: default
     blogs to get things running, I now have an sbt based build system set up that integrates nicely with IntelliJ and the setup has been smooth whether I run it
     on Windows or Linux. It fetches all required dependencies, including Scalding, from repositories and that ensures there are no version incompatibilities.
     I also have a script that lets me run Scalding jobs off sbt, without using scald.rb and that also seems to move between OSs pretty well.
+
+    Finally, it wasn't immediately clear to me how we have Scalding assemblies to allow creating portions of a flow. It wasn't easy to create a part here, a part there and
+    link them together like you would in Cascading. After some searching, I found the way to do this as well.
 </p>
 
 <h4> IntelliJ 13 and built in sbt support </h4>
